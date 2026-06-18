@@ -15,7 +15,7 @@ library(ggplot2)
 library(ggpubr)
 library(DescTools)
 
-df <- read_excel("~/Documents/Experiments/5.14.26 EY111 Read 2.xlsx", 
+df <- read_excel("~/Documents/Experiments/5.14.26 EY111 OD5.xlsx", 
     sheet = "Sheet1")
 ```
 
@@ -36,33 +36,70 @@ colors <- c("Alive" = "steelblue", "Control" = "black", "Dead" = "red", "Delayed
 p <- ggplot(i, aes(x=min)) + 
   geom_line(aes(y = A1, color="Alive")) + 
   geom_line(aes(y = A3, color="Alive")) + 
-  geom_line(aes(y = A5, color="Delayed Dead")) + 
-  geom_line(aes(y = A7, color="Delayed Dead")) + 
+  #geom_line(aes(y = A5, color="Delayed Dead")) + 
+  #geom_line(aes(y = A7, color="Delayed Dead")) + 
   geom_line(aes(y = A9, color="Alive")) + 
   geom_line(aes(y = A11, color="Control")) + 
   geom_line(aes(y = C1, color="Alive")) + 
-  geom_line(aes(y = C3, color="Delayed Dead")) + 
+  #geom_line(aes(y = C3, color="Delayed Dead")) + 
   geom_line(aes(y = C5, color="Alive")) + 
   geom_line(aes(y = C7, color="Alive")) + 
-  geom_line(aes(y = C9, color="Dead")) + 
+  #geom_line(aes(y = C9, color="Dead")) + 
   geom_line(aes(y = C11, color="Control")) +
-  geom_line(aes(y = E1, color="Dead")) + 
+  #geom_line(aes(y = E1, color="Dead")) + 
   geom_line(aes(y = E3, color="Alive")) +
   geom_line(aes(y = E5, color="Alive")) + 
   geom_line(aes(y = E7, color="Alive")) + 
-  geom_line(aes(y = E9, color="Delayed Dead")) +
+  #geom_line(aes(y = E9, color="Delayed Dead")) +
   geom_line(aes(y = E11, color="Control")) +
-  geom_line(aes(y = G1, color="Alive")) + 
-  geom_line(aes(y = G3, color="Delayed Dead")) + 
+  #geom_line(aes(y = G1, color="Alive")) + 
+  #geom_line(aes(y = G3, color="Delayed Dead")) + 
   geom_line(aes(y = G5, color="Alive")) + 
   geom_line(aes(y = G7, color="Alive")) + 
-  geom_line(aes(y = G9, color="Delayed Dead")) + 
+  #geom_line(aes(y = G9, color="Delayed Dead")) + 
   geom_line(aes(y = G11, color="Control")) + 
-  labs(title="EY111 4 day deaths",
+  labs(title="EY111 Alive",
         x ="Time (min)", y = "Luminescence (AU)", color = "Legend")+
-    scale_color_manual(values = colors)
+    scale_color_manual(values = colors)+
+  ylim(0,3000)
 p
-ggsave("EY111 4day.png")
+#ggsave("EY111 Alive.png")
+
+```
+
+```{r Lum}
+colors <- c("Injected-Alive" = "steelblue", "Control" = "black", "Injected-Dead" = "red", "Injected-Tolerant"="purple")
+
+p <- ggplot(i, aes(x=min)) + 
+  #geom_line(aes(y = A1, color="Alive")) + 
+  #geom_line(aes(y = A3, color="Alive")) + 
+  #geom_line(aes(y = A5, color="Delayed Dead")) + 
+  #geom_line(aes(y = A7, color="Delayed Dead")) + 
+  #geom_line(aes(y = A9, color="Alive")) + 
+  geom_line(aes(y = A11, color="Control")) + 
+  #geom_line(aes(y = C1, color="Alive")) + 
+  geom_line(aes(y = C3, color="Injected-Alive")) + 
+  #geom_line(aes(y = C5, color="Alive")) + 
+  #geom_line(aes(y = C7, color="Alive")) + 
+  geom_line(aes(y = C9, color="Injected-Dead")) + 
+  geom_line(aes(y = C11, color="Control")) +
+  geom_line(aes(y = E1, color="Injected-Dead")) + 
+  #geom_line(aes(y = E3, color="Alive")) +
+  geom_line(aes(y = E5, color="Injected-Alive")) + 
+  geom_line(aes(y = E7, color="Injected-Alive")) + 
+  geom_line(aes(y = E9, color="Injected-Alive")) +
+  geom_line(aes(y = E11, color="Control")) +
+  geom_line(aes(y = G1, color="Injected-Alive")) + 
+  #geom_line(aes(y = G3, color="Delayed Dead")) + 
+  geom_line(aes(y = G5, color="Injected-Alive")) + 
+  geom_line(aes(y = G7, color="Injected-Alive")) + 
+  #geom_line(aes(y = G9, color="Delayed Dead")) + 
+  geom_line(aes(y = G11, color="Control")) + 
+  labs(x ="Time (min)", y = "Luminescence (AU)", color = "Legend")+
+    scale_color_manual(values = colors)+
+  theme(legend.position = "none")
+p
+#ggsave("EY111 Poster.png")
 
 ```
 
@@ -70,6 +107,8 @@ ggsave("EY111 4day.png")
 
 
 my_vec <- numeric()
+
+
 
 for (col in i) {
     a <- AUC(min, col, method = c("trapezoid"))
@@ -92,6 +131,7 @@ geom_bar(stat="summary",
            fun=mean,
            aes(fill=dose)) +
   geom_point(position = position_jitter(width = 0.2), color = "black")+
+  scale_fill_manual(values = c("#00BFC4","#7CAE00", "#F8766D","#C77CFF"))+
   stat_compare_means(comparisons = my_comparisons)+
   labs(title="EY111 Lum AUC",
         x ="Condition", y = "Area Under Curve")
